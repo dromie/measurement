@@ -1,0 +1,119 @@
+<HTML>
+<BODY>
+<form onsubmit="return false;">
+<select id="months" >
+</select>
+Monthly limit: <input id="limit" type=number size=10 > Gb
+</form>
+<div id="container" style="width:100%; height:400px;"></div>
+
+<script src="js/jquery-min.js"></script>
+<script src="js/highcharts.js"></script>
+<script>
+<!--
+
+var createChart=function (datePrefix,limit) { 
+	limit=parseInt(limit);
+	firstDay=new Date();
+	firstDay.setFullYear(parseInt(datePrefix.substring(0,4)),parseInt(datePrefix.substring(5))-1,1);
+	firstDay.setHours(0,0,0,0);
+	console.log(firstDay.toISOString());
+	$.get('meres.txt',function(data) {
+		dailyConsumption=[];
+		left=[];
+		var rows=data.split('\n');
+		dates=[]
+		$.each(rows,function(index,value) {
+			fields=value.split('-');
+			if (fields.length>1) {
+				str=fields[0]+"-"+fields[1];
+				if ($.inArray(str,dates)==-1) {
+					dates.push(str);
+				}
+			}
+		});
+		$( "#months" ).html("");
+		$.each(dates,function(index,value) {
+			html="<option"+(value==datePrefix?" selected=\"selected\"":"")+">"+value+"</option>";
+			$(html).appendTo("#months");
+		});
+		$.each(rows,function(index,value) {
+			if (datePrefix===value.substring(0,7)) {
+				var cons=value.split(',');
+				date=cons[0].split('-');
+				day=parseInt(date[2]);
+				dailyConsumption.push([Date.UTC(date[0],date[1]-1,date[2]),parseInt(cons[3])/1024/1024]);
+		}
+		});
+		dailyConsumption.sort( function (a,b) {
+			return a[0]<b[0]?-1:a[0]>b[0]?1:0;
+		});
+		MbLeft=limit*1024;
+		left=[[firstDay.getTime(),limit]];
+		$.each(dailyConsumption, function(index,value) {
+			MbLeft-=value[1];
+			left.push([value[0]+(24*60*60*1000/2),MbLeft/1024]);
+		});
+		$('#container').highcharts({
+			chart: {
+				
+			},
+			title: {
+				text: 'Traffic analysis'
+			},
+			xAxis: {
+				type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                }
+			},
+			yAxis: [
+			{
+				min: 0,
+				id: "cucc",
+				title: {
+					text: 'data in Megabytes '
+				}, 
+			},
+			{
+				id: "mucc",
+				title: {
+					text: 'data in Gigabytes '
+				}, 
+				opposite: true,
+				min: 0
+			}
+			],
+			series: [{
+				type: 'column',
+				name: 'Daily Consumption',
+				data: dailyConsumption,
+				yAxis: "cucc"
+			}, 
+			{
+				type: 'spline',
+				name: 'left',
+				data: left,
+				yAxis: "mucc"
+			}
+			]
+		});
+	},'text');
+};
+
+if (!$( "#limit" ).val()) {
+	$( "#limit" ).val(4);
+}
+currentDatePrefix=new Date().toISOString().substring(0,7);
+
+createChart(currentDatePrefix,$("#limit").val());
+var recreate=function() {
+	createChart($( "#months option:selected" ).val(),$("#limit").val());
+};
+$( "#months" ).change( recreate);
+$( "#limit" ).change( recreate);
+-->
+</script>
+</BODY>
+</HTML>
