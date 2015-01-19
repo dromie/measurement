@@ -21,7 +21,6 @@ var createChart=function (datePrefix,firstday,limit) {
 	lastDay=new Date();
 	lastDay.setFullYear(parseInt(datePrefix.substring(0,4)),parseInt(datePrefix.substring(5)),firstday-1);
 	lastDay.setHours(0,0,0,0);
-	console.log(firstDay.toISOString());
 	$.get('meres.txt',function(data) {
 		dailyConsumption=[];
 		left=[];
@@ -42,14 +41,10 @@ var createChart=function (datePrefix,firstday,limit) {
 			html="<option"+(value==datePrefix?" selected=\"selected\"":"")+">"+value+"</option>";
 			$(html).appendTo("#months");
 		});
-		console.log(firstDay);
-		console.log(lastDay);
 
 		$.each(rows,function(index,value) {
 			var cons=value.split(',');
-			console.log(cons[0]);
 			date=new Date(cons[0]);
-			console.log(date);
 			if (date>=firstDay && date<lastDay) {
 				dailyConsumption.push([date.getTime(),parseInt(cons[3])/1024/1024]);
 			}
@@ -66,12 +61,8 @@ var createChart=function (datePrefix,firstday,limit) {
 			left.push([lastData,MbLeft/1024]);
 		});
 		if (lastDay.getTime()-lastData>4*24*3600*1000) {
-			console.log(lastData);
-			console.log(limit*1024-MbLeft);
 			msAvg=((limit*1024-MbLeft))/(lastData-firstDay.getTime());
-			console.log(msAvg);
 			prognosis=msAvg*(lastDay.getTime()-firstDay.getTime());
-			console.log(prognosis);
 			left.push([lastDay.getTime(),((limit*1024)-prognosis)/1024]);
 		}
 		$('#container').highcharts({
