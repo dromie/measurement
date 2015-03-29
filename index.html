@@ -95,18 +95,33 @@ var createChart=function (datePrefix,firstday,limit) {
 				opposite: true,
 				min: 0
 			}
-			],
+      ],
+
+      tooltip: {
+        formatter: function () {
+        return "<b>"+Highcharts.dateFormat("%b %e",this.x)+
+          "</b><br/>"+this.series.userOptions.tooltipOptions.valuePrefix+
+        Highcharts.numberFormat(this.y,2)+
+        this.series.userOptions.tooltipOptions.valueSuffix;
+        }
+      },
 			series: [{
 				type: 'column',
 				name: 'Daily Consumption',
 				data: dailyConsumption,
-				yAxis: "cucc"
+				yAxis: "cucc",
+        tooltipOptions: {
+        valuePrefix:"Consumption: ",
+        valueSuffix:" Mb" }
 			}, 
 			{
 				type: 'spline',
 				name: 'left',
 				data: left,
-				yAxis: "mucc"
+			  yAxis: "mucc",
+        tooltipOptions: {
+        valuePrefix:"Left: ",
+        valueSuffix:" Gb" }
 			}
 			]
 		});

@@ -1,7 +1,7 @@
-#!/bin/ash
+#!/bin/bash
 #DATE,DAYTOTAL,LASTCONNECTTOTAL
-DATA=/mnt/usb/measurement.txt
-IFACE=3g-wan
+DATA=/mnt/usb/graph/measurement.txt
+IFACE=ppp0
 HEADER="Date,CurrentTotal,SubTotal,DailyTotal"
 if [ -f /mnt/usb/USB_DISK_NOT_PRESENT ]; then 
 	exit -1
